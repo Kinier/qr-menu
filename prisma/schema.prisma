@@ -1,0 +1,106 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+generator prismaClassGenerator {
+    provider               = "prisma-class-generator"
+    dryRun                 = false
+    separateRelationFields = true
+}
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+model User {
+    id           Int        @id @default(autoincrement())
+    email        String     @unique
+    password     String
+    role         String
+    restaurant   Restaurant @relation(fields: [restaurantId], references: [id])
+    restaurantId Int
+    orders       Order[]
+}
+
+model Restaurant {
+    id      Int     @id @default(autoincrement())
+    name    String
+    address String
+    phone   String
+    menus   Menu[]
+    users   User[]
+    Order   Order[]
+    qr      String?
+}
+
+model Menu {
+    id           Int        @id @default(autoincrement())
+    name         String
+    restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+    description  String?
+    photo        String?
+    categories   Category[]
+    restaurantId Int
+    status       Boolean    @default(true)
+}
+
+model Category {
+    id     Int     @id @default(autoincrement())
+    name   String
+    menu   Menu    @relation(fields: [menuId], references: [id], onDelete: Cascade)
+    photo  String?
+    items  Item[]
+    menuId Int
+}
+
+model Item {
+    id          Int         @id @default(autoincrement())
+    category    Category    @relation(fields: [categoryId], references: [id])
+    name        String
+    description String?
+    price       Float
+    photo       String?
+    categoryId  Int
+    OrderItem   OrderItem[]
+}
+
+model Order {
+    id           Int         @id @default(autoincrement())
+    user         User        @relation(fields: [userId], references: [id])
+    restaurant   Restaurant  @relation(fields: [restaurantId], references: [id])
+    created_at   DateTime    @default(now())
+    status       String
+    order_items  OrderItem[]
+    userId       Int
+    restaurantId Int
+}
+
+model OrderItem {
+    id       Int   @id @default(autoincrement())
+    order    Order @relation(fields: [orderId], references: [id])
+    item     Item  @relation(fields: [itemId], references: [id])
+    quantity Int
+    price    Float
+    orderId  Int
+    itemId   Int
+}
+
+// model User {
+//   id    Int     @default(autoincrement()) @id
+//   email String  @unique
+//   name  String?
+//   posts Post[]
+// }
+
+// model Post {
+//   id        Int      @default(autoincrement()) @id
+//   title     String
+//   content   String?
+//   published Boolean? @default(false)
+//   author    User?    @relation(fields: [authorId], references: [id])
+//   authorId  Int?
+// }
