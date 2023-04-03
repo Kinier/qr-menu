@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Box, ButtonGroup, CircularProgress, FormControl, Grid, Input, Paper, Typography, makeStyles } from '@mui/material';
+import { Box, ButtonGroup, CircularProgress, FormControl, Grid, Input, Paper, Skeleton, Typography, makeStyles } from '@mui/material';
 import { TextField } from '@mui/material';
 import { Button } from '@mui/material';
 import { clearToken } from '../../store/features/usersSlice';
@@ -97,22 +97,29 @@ export default function RestaurantSettings() {
         }
 
       </Paper>
-      <Paper sx={{ m: 2, p: 2 }}>
-        <Grid container columnSpacing={1}>
-          <Grid item>
-            <Box component='img' src={image ? URL.createObjectURL(image) : ''} sx={{ width: '100%', height: '100%' }} ref={componentRef}/>
+      <Paper sx={{ m: 2, p: 2, minHeight: '200px' }}>
+        <Grid container columnSpacing={1} >
+          <Grid item sm={2} sx={{height: '164px'}}>
+
+
+            {!image && <Grid container justifyContent="center" padding={5}>
+            <CircularProgress />
+          </Grid>}
+
+            
+              {image && <Box component='img' src={image ? URL.createObjectURL(image) : ''} ref={componentRef}  />}
           </Grid>
-          <Grid item >
+          <Grid item xs={12} md={7}>
             <Typography>QR Code for restaurant</Typography>
           </Grid>
-          <Grid item xs={12} md={12}>
+          <Grid item xs={12} md={12} xl={12} lg={12} sm={12}>
             <ButtonGroup fullWidth variant="text" aria-label="text button group">
               <ReactToPrint
                 trigger={() => <Button fullWidth>Print</Button>}
                 content={() => componentRef.current}
               />
               <Button fullWidth>Generate QR-Code</Button>
-              
+
             </ButtonGroup>
           </Grid>
         </Grid>
