@@ -1,3 +1,5 @@
+import { JwtService } from '@nestjs/jwt';
+import { Worker } from './socket.service';
 import {
     SubscribeMessage,
     WebSocketGateway,
@@ -8,40 +10,81 @@ import {
   } from '@nestjs/websockets';
   import { Socket, Server } from 'socket.io';
   import { SocketService } from './socket.service';
+import { Headers } from '@nestjs/common';
+import { UserService } from 'src/user/user.service';
+import { User } from '@prisma/client';
+interface Order {
+  restaurantId: number,
+  items: Array<Object>,
+  table: number
+}
+
+interface JwtPayload {
+  email: string,
+  restaurantId: number
+}
   @WebSocketGateway({
     cors: {
       origin: '*',
     },
-    // namespace: '/api/orders',
 
   })
+  
   export class SocketGateway
-    implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
+    implements OnGatewayConnection, OnGatewayDisconnect
   {
-    constructor(private socketService: SocketService) {}
+    constructor(private socketService: SocketService, private jwtService: JwtService, private userService: UserService) {}
   
     @WebSocketServer() server: Server;
   
     @SubscribeMessage('sendMessage')
     async handleSendMessage(client: Socket, payload: any): Promise<void> {
       await this.socketService.createMessage(payload);
-      console.log(payload)
       this.server.emit('recMessage', payload);
     }
-  
-    afterInit(server: Server) {
-      console.log(server);
-      //Do stuffs
+
+    
+    @SubscribeMessage('orderByClient')
+    async handleOrderByClient(client: Socket, payload: Order): Promise<void> {
+      
+      // await this.socketService.createMessage(payload);
+      console.log(this.socketService.workers)
+      this.socketService.workers.map((worker: Worker, index)=>{
+        if (worker.restaurantId === payload.restaurantId){
+          this.server.to(worker.workerSocketId).emit("orderByClient", "{payload}")
+        }
+      })
     }
+  
+
   
     handleDisconnect(client: Socket) {
       console.log(`Disconnected: ${client.id}`);
-      //Do stuffs
+      this.socketService.deleteWorker(client.id)
+      client.disconnect()
     }
-  
-    handleConnection(client: Socket, ...args: any[]) {
-        console.log("sfdafsdf")
+    
+    async handleConnection(client: Socket, @Headers() headers: any, ...args: any[]) {
+      
+      try{
+        if (this.jwtService.verify(client.handshake.headers.authorization.split(' ')[1])){
+          
+          const jwt = this.jwtService.decode(client.handshake.headers.authorization.split(' ')[1]) as JwtPayload
+        
+          const user: User = await this.userService.findOneByEmail(jwt.email)
+          await this.socketService.addWorker(user.id, client.id, jwt.restaurantId)
+        }
+            
+        
+    }catch{
+
+        // client.disconnect(true)
+        return; // ! after this, code for worker
+    }
+    
+        
       console.log(`Connected ${client.id}`);
-      //Do stuffs
     }
   }
+
+
