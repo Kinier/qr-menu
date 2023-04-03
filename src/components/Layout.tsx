@@ -5,6 +5,7 @@ import { Outlet, useNavigate } from "react-router-dom";
 import { RootState, store } from '../store/index';
 import { Backdrop, CircularProgress } from "@mui/material";
 import { useSelector } from "react-redux";
+import OrdersSocket from "./OrdersSocket";
 function Layout() {
     console.log("Подгрузочка")
     const user = useSelector((state: RootState)=> state.users)
@@ -35,6 +36,7 @@ function Layout() {
             }
             {user.isAuthenticated && (
                 <>
+                    <OrdersSocket/>
                     <AppHeader drawerWidth={drawerWidth} handleDrawerToggle={handleDrawerToggle} />
                     <SideMenu drawerWidth={drawerWidth} handleDrawerToggle={handleDrawerToggle} mobileOpen={mobileOpen} />
                     <Outlet />
