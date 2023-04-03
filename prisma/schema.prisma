@@ -23,7 +23,6 @@ model User {
     role         String
     restaurant   Restaurant @relation(fields: [restaurantId], references: [id])
     restaurantId Int
-    orders       Order[]
 }
 
 model Restaurant {
@@ -70,13 +69,12 @@ model Item {
 
 model Order {
     id           Int         @id @default(autoincrement())
-    user         User        @relation(fields: [userId], references: [id])
     restaurant   Restaurant  @relation(fields: [restaurantId], references: [id])
     created_at   DateTime    @default(now())
     status       String
     order_items  OrderItem[]
-    userId       Int
     restaurantId Int
+    message      String
 }
 
 model OrderItem {
