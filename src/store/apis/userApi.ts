@@ -2,8 +2,8 @@ import { emptySplitApi } from './emptySplitApi'
 
 type User = {
   email: string, 
-  password: string, 
-  restaurantId: number
+  role: string, 
+  establishmentId: number
 }
 
 export const userApi = emptySplitApi.injectEndpoints({

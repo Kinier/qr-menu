@@ -40,7 +40,7 @@ export default function ItemCard({ item, isFetching }: { item: Item, isFetching:
                         {item.description}
                     </Typography>
                     <Typography variant="body2" color="textSecondary">
-                        Price: ${item.price}
+                        Price: {item.price} byn
                     </Typography>
                     <Box sx={{ display: 'flex'}}>
 

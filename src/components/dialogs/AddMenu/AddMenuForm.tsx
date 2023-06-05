@@ -48,7 +48,7 @@ const AddMenuForm = ({onClose: onClose}: {onClose: () => void}) => {
               }}
             />
           </Button>
-          <Button type="submit" disabled={isSubmitting} color="primary" size="medium" variant="outlined">
+          <Button type="submit" disabled={isSubmitting} color="primary" size="medium" variant="outlined" fullWidth sx={{mt: "5px"}}>
             Submit
           </Button>
         </Form>

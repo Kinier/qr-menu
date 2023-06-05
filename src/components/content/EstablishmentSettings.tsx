@@ -2,13 +2,11 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Box, ButtonGroup, CircularProgress, FormControl, Grid, Input, Paper, Skeleton, Typography, makeStyles } from '@mui/material';
 import { TextField } from '@mui/material';
 import { Button } from '@mui/material';
-import { clearToken } from '../../store/features/usersSlice';
 import { useDispatch, useSelector, } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import LogoutIcon from '@mui/icons-material/Logout';
 import { useProfileQuery } from '../../store/apis/userApi';
 import type { RootState } from '../../store';
-import { useChangeRestaurantMutation, useGetRestaurantByIdQuery } from '../../store/apis/restaurantApi';
+import { useChangeEstablishmentMutation, useGetEstablishmentByIdQuery } from '../../store/apis/establishmentApi';
 import { Formik, Form, Field } from 'formik';
 import ReactToPrint from 'react-to-print';
 const styles = {
@@ -23,12 +21,11 @@ const styles = {
   },
 }
 
-export default function RestaurantSettings() {
-  const user = useSelector((state: RootState) => state.users)
+export default function EstablishmentSettings() {
   const profileQuery = useProfileQuery()
   const [image, setImage] = useState<Blob | null>(null)
-  const restaurantFetch = useGetRestaurantByIdQuery()
-  const [changeRestaurant] = useChangeRestaurantMutation()
+  const establishmentFetch = useGetEstablishmentByIdQuery()
+  const [changeEstablishment] = useChangeEstablishmentMutation()
 
   const componentRef = useRef(null);
   const dispatch = useDispatch()
@@ -37,33 +34,35 @@ export default function RestaurantSettings() {
 
   useEffect(() => {
     profileQuery.isSuccess &&
-      fetch(`${process.env.REACT_APP_API_URL}/restaurant/${profileQuery.data?.restaurantId}/qr`)
+      fetch(`${process.env.REACT_APP_API_URL}/establishment/${profileQuery.data?.establishmentId}/qr`)
         .then((value) => value.blob()
           .then((value) => setImage(value)))
-  }, [profileQuery.data?.restaurantId])
+  }, [profileQuery.data?.establishmentId])
 
 
-
-  const exitAccount = () => {
-    dispatch(clearToken())
-    navigate('/login')
+  const qrGenerate = async () => {
+    profileQuery.isSuccess &&
+    fetch(`${process.env.REACT_APP_API_URL}/establishment/qr/${profileQuery.data?.establishmentId}`, {method: "POST",headers: {"Content-Type": "application/json"}})
+      .then((value) => value.blob()
+        .then((value) => setImage(value)))
   }
+
 
   return (
     <>
       <Paper sx={{ m: 2 }}>
-        {(restaurantFetch.isLoading || restaurantFetch.isFetching) &&
+        {(establishmentFetch.isLoading || establishmentFetch.isFetching) &&
           <Grid container justifyContent="center" padding={2}>
             <CircularProgress />
           </Grid>
         }
-        {restaurantFetch.isSuccess && !restaurantFetch.isFetching &&
+        {establishmentFetch.isSuccess && !establishmentFetch.isFetching &&
           <Formik
-            initialValues={{ name: restaurantFetch.data.name, address: restaurantFetch.data.address, phone: restaurantFetch.data.phone }} // ! file так и надо
+            initialValues={{ name: establishmentFetch.data.name, address: establishmentFetch.data.address, phone: establishmentFetch.data.phone }} // ! file так и надо
             validate={() => ({})}
             onSubmit={async (values, { setSubmitting }) => {
               console.log(values)
-              changeRestaurant({ restaurant: { ...values } })
+              changeEstablishment({ establishment: { ...values } })
               setSubmitting(false);
             }}
           >
@@ -110,7 +109,7 @@ export default function RestaurantSettings() {
               {image && <Box component='img' src={image ? URL.createObjectURL(image) : ''} ref={componentRef}  />}
           </Grid>
           <Grid item xs={12} md={7}>
-            <Typography>QR Code for restaurant</Typography>
+            <Typography>QR Code for establishment</Typography>
           </Grid>
           <Grid item xs={12} md={12} xl={12} lg={12} sm={12}>
             <ButtonGroup fullWidth variant="text" aria-label="text button group">
@@ -118,7 +117,7 @@ export default function RestaurantSettings() {
                 trigger={() => <Button fullWidth>Print</Button>}
                 content={() => componentRef.current}
               />
-              <Button fullWidth>Generate QR-Code</Button>
+              <Button fullWidth onClick={()=>qrGenerate()}>Generate QR-Code</Button>
 
             </ButtonGroup>
           </Grid>
@@ -127,13 +126,7 @@ export default function RestaurantSettings() {
 
 
       </Paper>
-      <Paper sx={{ m: 2 }}>
-
-        <Button onClick={() => exitAccount()}>
-          <LogoutIcon />
-          Exit
-        </Button>
-      </Paper>
+      
     </>
   );
 }

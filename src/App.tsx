@@ -11,7 +11,7 @@ import { createContext, useState } from 'react';
 import themeGetter from './themes/themeGetter';
 import ProfilePage from './components/content/ProfilePage';
 import Dashboard from './components/content/Dashboard';
-import RestaurantSettings from './components/content/RestaurantSettings';
+import RestaurantSettings from './components/content/EstablishmentSettings';
 import Menus from './components/content/Menus';
 import { RegisterPage } from './components/auth/RegisterPage';
 import { LoginPage } from './components/auth/LoginPage';

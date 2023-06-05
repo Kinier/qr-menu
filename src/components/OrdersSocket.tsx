@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { store } from "../store";
 import { Snackbar, Alert } from "@mui/material";
+import { isNewTrue } from "../store/features/newOrderSocketSlice";
 
 const socket = io(`${process.env.REACT_APP_API_URL}`, {
     extraHeaders: {
@@ -19,6 +20,7 @@ const socket = io(`${process.env.REACT_APP_API_URL}`, {
 export default function OrdersSocket() {
     // const isNewOrder = useSelector((state: RootState)=> state.order.isNewOrder)
     const [isNewOrder, setNewOrderState] = useState(false)
+    const socketNotif = useSelector((state: RootState) => state.newOrderSocket.isNew)
     const dispatch = useDispatch()
     socket.on('connect', () => {
         console.log('aaaaaaaaaaaaaaaa')
@@ -28,6 +30,7 @@ export default function OrdersSocket() {
     useEffect(() => {
         socket.on('orderByClient', () => {
             setNewOrderState(true)
+            dispatch(isNewTrue())
         });
         return () => {
             socket.off('orderByClient');

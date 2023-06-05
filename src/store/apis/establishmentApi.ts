@@ -1,6 +1,6 @@
 import { emptySplitApi } from './emptySplitApi';
 
-export type Restaurant = {
+export type Establishment = {
     id: number,
     name: string,
     address: string,
@@ -9,37 +9,33 @@ export type Restaurant = {
     // logo: string
 }
 
-export const restaurantApi = emptySplitApi.injectEndpoints({
+export const establishmentApi = emptySplitApi.injectEndpoints({
     endpoints: (builder) => ({
-        // getAllRestaurants: builder.query<Restaurant[], void>({
-        //     query: () => `restaurant`,
-        //     providesTags: ['Restaurant']
-        // }),
-        getRestaurantById: builder.query<Restaurant, void>({
-            query: () => `restaurant`,
-            providesTags: ['Restaurant']
+        getEstablishmentById: builder.query<Establishment, void>({
+            query: () => `establishment`,
+            providesTags: ['Establishment']
         }),
-        createRestaurant: builder.mutation({
+        createEstablishment: builder.mutation({
             query: ({ description, name, photo }: { description: string, name: string, photo: string | File }) => {
                 const formData = new FormData();
                 formData.append('name', name);
                 formData.append('description', description);
                 formData.append('photo', photo);
                 return ({
-                    url: `restaurant`,
+                    url: `establishment`,
                     method: 'POST',
                     body: formData, 
 
                 })
             },
-            invalidatesTags: ['Restaurant'],
+            invalidatesTags: ['Establishment'],
         }),
-        deleteRestaurant: builder.mutation({
+        deleteEstablishment: builder.mutation({
             query: ({ id }: { id: number }) => ({
-                url: `restaurant/${id}`,
+                url: `establishment/${id}`,
                 method: 'DELETE',
             }),
-            invalidatesTags: ['Restaurant'],
+            invalidatesTags: ['Establishment'],
         }),
         uploadFile: builder.mutation({
             query: (file) => {
@@ -47,29 +43,29 @@ export const restaurantApi = emptySplitApi.injectEndpoints({
                 formData.append('file', file);
 
                 return {
-                    url: '/restaurant/upload',
+                    url: '/establishment/upload',
                     method: 'POST',
                     body: formData,
                 };
             },
         }),
-        changeRestaurant: builder.mutation({
-            query: ({ restaurant }: { restaurant: { name: string, phone: string, address:  string } }) => {
+        changeEstablishment: builder.mutation({
+            query: ({ establishment }: { establishment: { name: string, phone: string, address:  string } }) => {
                 // const formData = new FormData();
                 // formData.append('name', restaurant.name);
                 // formData.append('phone', restaurant.phone);
                 // formData.append('address', restaurant.address);
                 return ({
-                    url: `/restaurant`,
+                    url: `/establishment`,
                     method: 'PATCH',
 
-                    body: restaurant
+                    body: establishment
                 })
             },
-            invalidatesTags: ['Restaurant'],
+            invalidatesTags: ['Establishment'],
         }),
     }),
     overrideExisting: false,
 })
 
-export const { /*useGetAllRestaurantsQuery,*/ useCreateRestaurantMutation, useDeleteRestaurantMutation, useUploadFileMutation, useGetRestaurantByIdQuery, useChangeRestaurantMutation } = restaurantApi
+export const { /*useGetAllEstablishmentsQuery,*/ useCreateEstablishmentMutation, useDeleteEstablishmentMutation, useUploadFileMutation, useGetEstablishmentByIdQuery, useChangeEstablishmentMutation } = establishmentApi

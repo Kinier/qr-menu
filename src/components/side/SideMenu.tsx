@@ -1,5 +1,6 @@
 import { Box, Drawer, Toolbar, Typography } from "@mui/material";
 import { PagesList } from "../lists/PagesList";
+import iconpic from "../../cooking.png";
 function SideMenu({ drawerWidth, mobileOpen, handleDrawerToggle }: { drawerWidth: number, mobileOpen: any, handleDrawerToggle: any }) {
 
     return (
@@ -23,7 +24,10 @@ function SideMenu({ drawerWidth, mobileOpen, handleDrawerToggle }: { drawerWidth
                     }}
                 >
                     <div>
-                        <Toolbar sx={{justifyContent:'center', alignItems: 'center'}} children={<Typography >Org. logo</Typography>} />
+                        <Toolbar sx={{ justifyContent: 'center', alignItems: 'center' }} children={
+                            <Typography >Org. logo</Typography>
+                            
+                        } />
                     </div>
                     <PagesList />
                 </Drawer>
@@ -39,7 +43,20 @@ function SideMenu({ drawerWidth, mobileOpen, handleDrawerToggle }: { drawerWidth
                 >
                     <div>
 
-                        <Toolbar sx={{justifyContent:'center', alignItems: 'center'}} children={<Typography >Org. logo</Typography>} />
+                        <Toolbar sx={{ justifyContent: 'center', alignItems: 'center' }} children={
+                        // <Typography >Org. logo</Typography>
+                        <Box
+                                component="img"
+                                sx={{
+                                    height: 40,
+                                    width: 40,
+                                    maxHeight: { xs: 60, md: 60 },
+                                    maxWidth: { xs: 60, md: 60 },
+                                }}
+                                alt="iconpic"
+                                src={iconpic}
+                            />
+                        } />
                     </div>
                     <PagesList />
                 </Drawer>

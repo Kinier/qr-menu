@@ -5,10 +5,12 @@ import { userApi } from './apis/userApi';
 import { configureStore } from '@reduxjs/toolkit';
 import usersReducer, { checkTokenExpirationMiddleware } from './features/usersSlice'; 
 import selectedCategoryReducer from './features/selectedCategorySlice';
+import newOrderSocketReducer from './features/newOrderSocketSlice';
 
 export const store = configureStore({
     reducer: {
         users: usersReducer,
+        newOrderSocket: newOrderSocketReducer,
         selectedCategory: selectedCategoryReducer,
         [emptySplitApi.reducerPath]: emptySplitApi.reducer,
     },

@@ -5,14 +5,14 @@ import { ThemeContext } from '../../App';
 import themeGetter from '../../themes/themeGetter';
 import { useSelector } from 'react-redux';
 import type { RootState } from '../../store';
-import { useGetRestaurantByIdQuery } from '../../store/apis/restaurantApi';
+import { useGetEstablishmentByIdQuery } from '../../store/apis/establishmentApi';
 
 
 function AppHeader({ drawerWidth, handleDrawerToggle }: { drawerWidth: number, handleDrawerToggle: any }) { // todo поставить тип
   const setTheme = useContext(ThemeContext)
   const theme = useTheme()
   const user = useSelector((state: RootState) => state.users)
-  const { data, error, isLoading, isFetching, isSuccess } = useGetRestaurantByIdQuery()
+  const { data, error, isLoading, isFetching, isSuccess } = useGetEstablishmentByIdQuery()
   const toggleThemeMode = () => {
     function _(){
       if (theme.palette.mode == 'light')
