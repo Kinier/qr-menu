@@ -1,4 +1,4 @@
-import { RestaurantModule } from './../restaurant/restaurant.module';
+import { EstablishmentModule } from './../establishment/establishment.module';
 import { AuthController } from './auth.controller';
 import { UserService } from 'src/user/user.service';
 

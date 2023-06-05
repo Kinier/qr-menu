@@ -18,6 +18,11 @@ export class OrderItemController {
     return this.orderItemService.findAll();
   }
 
+  @Get('order/:orderId')
+  findAllByOrder(@Param('orderId') orderId: string) {
+    return this.orderItemService.findAllByOrder(+orderId);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.orderItemService.findOne(+id);

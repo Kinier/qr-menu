@@ -7,13 +7,17 @@ import { PrismaService } from 'src/prisma.service';
 export class OrderItemService {
   constructor(private prisma: PrismaService){}
 
-  async create(orderItemCreate: Prisma.OrderItemCreateInput): Promise<OrderItem> {
+  async create(orderItemCreate: any): Promise<OrderItem> {
     
     return this.prisma.orderItem.create({data: orderItemCreate});
   }
 
   async findAll(): Promise<OrderItem[]> {
     return this.prisma.orderItem.findMany({orderBy: {id: "asc"}});
+  }
+
+  async findAllByOrder(orderId: number): Promise<OrderItem[]> {
+    return this.prisma.orderItem.findMany({orderBy: {id: "asc"}, where: {orderId: orderId}});
   }
 
   async findOne(id: number): Promise<OrderItem> {

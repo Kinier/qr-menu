@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 export interface Worker{
   id: number,
   workerSocketId: string,
-  restaurantId: number
+  establishmentId: number
 }
 
 @Injectable()
@@ -14,9 +14,9 @@ export class SocketService {
     return true
   }
 
-  async addWorker(workerId: number, workerSocketId: string, restaurantId: number){
+  async addWorker(workerId: number, workerSocketId: string, establishmentId: number){
     console.log("new worker")
-    this.workers.push({id: workerId, workerSocketId: workerSocketId, restaurantId: restaurantId})
+    this.workers.push({id: workerId, workerSocketId: workerSocketId, establishmentId: establishmentId})
   }
 
   async deleteWorker(workerSocketId: string){

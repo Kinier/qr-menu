@@ -14,14 +14,14 @@ import { Headers } from '@nestjs/common';
 import { UserService } from 'src/user/user.service';
 import { User } from '@prisma/client';
 interface Order {
-  restaurantId: number,
+  establishmentId: number,
   items: Array<Object>,
   table: number
 }
 
 interface JwtPayload {
   email: string,
-  restaurantId: number
+  establishmentId: number
 }
   @WebSocketGateway({
     cors: {
@@ -45,12 +45,12 @@ interface JwtPayload {
 
     
     @SubscribeMessage('orderByClient')
-    async handleOrderByClient(client: Socket, payload: Order): Promise<void> {
+    async handleOrderByClient(client: Socket, payload: any): Promise<void> {
       
       // await this.socketService.createMessage(payload);
       console.log(this.socketService.workers)
       this.socketService.workers.map((worker: Worker, index)=>{
-        if (worker.restaurantId === payload.restaurantId){
+        if (worker.establishmentId === payload.establishmentId){
           this.server.to(worker.workerSocketId).emit("orderByClient", "{payload}")
         }
       })
@@ -72,7 +72,7 @@ interface JwtPayload {
           const jwt = this.jwtService.decode(client.handshake.headers.authorization.split(' ')[1]) as JwtPayload
         
           const user: User = await this.userService.findOneByEmail(jwt.email)
-          await this.socketService.addWorker(user.id, client.id, jwt.restaurantId)
+          await this.socketService.addWorker(user.id, client.id, jwt.establishmentId)
         }
             
         

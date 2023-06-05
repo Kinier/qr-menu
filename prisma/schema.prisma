@@ -21,11 +21,11 @@ model User {
     email        String     @unique
     password     String
     role         String
-    restaurant   Restaurant @relation(fields: [restaurantId], references: [id])
-    restaurantId Int
+    establishment   Establishment @relation(fields: [establishmentId], references: [id])
+    establishmentId Int
 }
 
-model Restaurant {
+model Establishment {
     id      Int     @id @default(autoincrement())
     name    String
     address String
@@ -39,11 +39,11 @@ model Restaurant {
 model Menu {
     id           Int        @id @default(autoincrement())
     name         String
-    restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+    establishment   Establishment @relation(fields: [establishmentId], references: [id], onDelete: Cascade)
     description  String?
     photo        String?
     categories   Category[]
-    restaurantId Int
+    establishmentId Int
     status       Boolean    @default(true)
 }
 
@@ -69,11 +69,11 @@ model Item {
 
 model Order {
     id           Int         @id @default(autoincrement())
-    restaurant   Restaurant  @relation(fields: [restaurantId], references: [id])
+    establishment   Establishment  @relation(fields: [establishmentId], references: [id])
     created_at   DateTime    @default(now())
     status       String
     order_items  OrderItem[]
-    restaurantId Int
+    establishmentId Int
     message      String
 }
 
@@ -87,18 +87,3 @@ model OrderItem {
     itemId   Int
 }
 
-// model User {
-//   id    Int     @default(autoincrement()) @id
-//   email String  @unique
-//   name  String?
-//   posts Post[]
-// }
-
-// model Post {
-//   id        Int      @default(autoincrement()) @id
-//   title     String
-//   content   String?
-//   published Boolean? @default(false)
-//   author    User?    @relation(fields: [authorId], references: [id])
-//   authorId  Int?
-// }
